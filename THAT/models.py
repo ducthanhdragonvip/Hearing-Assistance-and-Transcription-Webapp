@@ -31,6 +31,7 @@ class Lecture(db.Model):
     details=db.Column(db.Text,nullable=True)
     user_id=db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
     video_path=db.Column(db.String(100),nullable=True,default='video/1.mp4')
+    subtitle_path = db.Column(db.String(100), nullable=True)
     video_transcript=db.Column(db.Text,nullable=True)    
     def __repr__(self):
         return f"Lecture('{self.title}','{self.date}','{self.starttime}','{self.endtime})"

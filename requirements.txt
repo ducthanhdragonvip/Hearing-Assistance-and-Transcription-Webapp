@@ -63,3 +63,4 @@ moviepy==1.0.3
 pysrt
 srt
 soundfile
+openai==0.28   
