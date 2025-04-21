@@ -64,3 +64,4 @@ pysrt
 srt
 soundfile
 openai==0.28   
+dotenv
