@@ -5,6 +5,7 @@ import imaplib
 from THAT import application,db,bcrypt,mail #using bcrypt to has the passwords in user database
 from THAT.models import User, Lecture
 from THAT.forms import RegistrationForm, LoginForm,LectureForm,SearchForm,MessageForm,UpdateAccountForm,FeedbackForm
+from THAT.sign import applyHandPointsVideo, applyHandPointsUpload,model_predict
 
 from flask_login import login_user,current_user,logout_user,login_required
 from sqlalchemy.orm.exc import NoResultFound
@@ -38,6 +39,7 @@ from werkzeug.utils import secure_filename
 # Add this near your other imports
 from THAT import application
 import openai
+import base64
 
 # Add these configs after the imports
 UPLOAD_FOLDER = 'THAT/static/video'
@@ -538,3 +540,38 @@ def get_chat_response():
             'error': str(e)
         })
 #--------------------------------------------------------------------------------------------
+
+
+@application.route('/sign_language', methods=['GET'])
+def index():
+    return render_template('index.html')
+
+@application.route('/predict',methods=['GET','POST'])
+def upload():
+    if request.method=='POST':
+        # get the file from post request
+        print(request)
+        f=request.files['file']
+        print(f)
+        # save the file to uploads folder
+        basepath=os.path.dirname(os.path.realpath('__file__'))
+        file_path=os.path.join(basepath,'uploads',secure_filename(f.filename))
+        f.save(file_path)
+
+        # Make prediction
+        result = model_predict(file_path, applyHandPointsUpload)
+        return 'Predicted alphabet : '+result
+    return None
+
+@application.route('/predict-img',methods=['GET','POST'])
+def predictImg():
+    if request.method=='POST':
+        basepath = os.path.dirname(os.path.realpath('__file__'))
+        file_path = os.path.join(basepath, 'uploads', secure_filename('videoImg.png'))
+        with open(file_path, "wb") as fh:
+            fh.write(base64.decodebytes(request.data))
+        # Make prediction
+        result = model_predict(file_path, applyHandPointsVideo)
+        return 'Predicted alphabet : ' + result
+        # return "Data received. Wait for our reply."
+    return None

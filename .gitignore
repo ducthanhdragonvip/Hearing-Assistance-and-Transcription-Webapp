@@ -1,3 +1,5 @@
 .env
 __pycache__/
 *.pyc
+uploads/
+THAT/signLanguage-Dataset-15-WithStillImages.npy
